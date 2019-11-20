@@ -1,4 +1,4 @@
-/**
+ /**
  * The Virtual Machine program reads an input file of instructions and executes them using a stack and writes the amswer to an output file
  * @author Jack O Mahony (117498152)
  * @date 13/11/2019
@@ -21,9 +21,9 @@ int running = 1; /** Keep track of whether HLT(end of instructions) is reached *
 int ip = 0; /** Instruction Pointer */
 int sp = -1; /** Stack pointer */
 
-int program[STACK_MAX]; /** Array containing instructions */
+float program[STACK_MAX]; /** Array containing instructions */
 
-int stack[STACK_MAX]; /** Stack */
+float stack[STACK_MAX]; /** Stack */
 
 typedef enum {
     ADD, /** Addition = 0*/
@@ -32,7 +32,7 @@ typedef enum {
     DIV, /** Division = 3 */
     EXP, /** Exponent = 4 */
     MOD, /** Modulus = 5 */
-    LOADINT, /** Push = 6 */
+    LOADNUM, /** Push = 6 */
     HLT  /** Halt = 7 */
 } InstructionSet;
 
@@ -67,7 +67,7 @@ int checker(const char input[]){
         /** Modulus = 5 */
         result = 5;
     }
-    else if(strcmp(input, "LOADINT")==0){
+    else if(strcmp(input, "LOADNUM")==0){
         /** Push = 6 */
         result = 6;
     }
@@ -78,7 +78,7 @@ int checker(const char input[]){
     return result;
 }
 
-void write2file(int res) {
+void write2file(float res) {
     /**
     * eval writes a parameter res to a file
     * @param res Integer the value to be written to file
@@ -86,7 +86,7 @@ void write2file(int res) {
     char filename[] = OUTPUT_FILE; /** Location of file */
     FILE *file = fopen ( filename, "w" ); /** Open file */
 
-    fprintf(file,"%d", res); /** Write to file*/
+    fprintf(file,"%f", res); /** Write to file*/
     fclose(file); /** Close file */
 }
 
@@ -97,62 +97,62 @@ void eval(int instr) {
      */
     switch (instr) {
         case HLT: {
-            int val_popped = stack[sp--]; /** Pop top of stack */
+            float val_popped = stack[sp--]; /** Pop top of stack */
             /** printf("%d\n", val_popped);  Print answer */
             write2file(val_popped);
             running = 0; /** End loop */
             break;
         }
-        case LOADINT: {
+        case LOADNUM: {
             sp++; /** Increment stack pointer */
             ip++; /** Increment instruction pointer */
             stack[sp] = program[ip];  /** Push to top of stack */
             break;
         }
         case ADD: {
-            int a = stack[sp--]; /** Pop top of stack */
-            int b = stack[sp--]; /** Pop top of stack */
-            int result = a + b; /** Implement instruction */
+            float a = stack[sp--]; /** Pop top of stack */
+            float b = stack[sp--]; /** Pop top of stack */
+            float result = a + b; /** Implement instruction */
             sp++; /** Increment stack pointer */
             stack[sp] = result; /** Result goes to top of stack */
             break;
         }
         case SUB: {
-            int a = stack[sp--]; /** Pop top of stack */
-            int b = stack[sp--]; /** Pop top of stack */
-            int result = b - a; /** Implement instruction */
+            float a = stack[sp--]; /** Pop top of stack */
+            float b = stack[sp--]; /** Pop top of stack */
+            float result = b - a; /** Implement instruction */
             sp++; /** Increment stack pointer */
             stack[sp] = result; /** Result goes to top of stack */
             break;
         }
         case MUL: {
-            int a = stack[sp--]; /** Pop top of stack */
-            int b = stack[sp--]; /** Pop top of stack */
-            int result = b * a; /** Implement instruction */
+            float a = stack[sp--]; /** Pop top of stack */
+            float b = stack[sp--]; /** Pop top of stack */
+            float result = b * a; /** Implement instruction */
             sp++; /** Increment stack pointer */
             stack[sp] = result; /** Result goes to top of stack */
             break;
         }
         case DIV: {
-            int a = stack[sp--]; /** Pop top of stack */
-            int b = stack[sp--]; /** Pop top of stack */
-            int result = b / a; /** Implement instruction */
+            float a = stack[sp--]; /** Pop top of stack */
+            float b = stack[sp--]; /** Pop top of stack */
+            float result = b / a; /** Implement instruction */
             sp++; /** Increment stack pointer */
             stack[sp] = result; /** Result goes to top of stack */
             break;
         }
         case MOD: {
-            int a = stack[sp--]; /** Pop top of stack */
-            int b = stack[sp--]; /** Pop top of stack */
-            int result = b % a; /** Implement instruction */
+            float a = stack[sp--]; /** Pop top of stack */
+            float b = stack[sp--]; /** Pop top of stack */
+            float result = fmod(a, b); /** Implement instruction */
             sp++; /** Increment stack pointer */
             stack[sp] = result; /** Result goes to top of stack */
             break;
         }
         case EXP: {
-            int a = stack[sp--]; /** Pop top of stack */
-            int b = stack[sp--]; /** Pop top of stack */
-            int result = pow(b, a); /** Implement instruction */
+            float a = stack[sp--]; /** Pop top of stack */
+            float b = stack[sp--]; /** Pop top of stack */
+            float result = pow(b, a); /** Implement instruction */
             sp++; /** Increment stack pointer */
             stack[sp] = result; /** Result goes to top of stack */
             break;
@@ -177,7 +177,7 @@ int main() {
             while(substr!= NULL){ /** Iterate through substring */
                 if (strcmp(substr, "\n")) { /** Check if empty */
                     if (isdigit(*substr) == 1) { /** If its a digit */
-                        program[i] = atoi(substr); /** Add instruction to array program */
+                        program[i] = atof(substr); /** Add instruction to array program */
                         i++; /** Increment counter for index in array program */
                     } else { /** Not a digit */
                         program[i] = checker(substr); /** Convert to instruction enum */
