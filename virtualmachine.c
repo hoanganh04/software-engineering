@@ -85,8 +85,11 @@ void write2file(float res) {
     */
     char filename[] = OUTPUT_FILE; /** Location of file */
     FILE *file = fopen ( filename, "w" ); /** Open file */
-
-    fprintf(file,"%f", res); /** Write to file*/
+    if (res-(int)res == 0) { /** Check if integer */
+        fprintf(file, "%d", (int)res); /** Write to file (integer)*/
+    } else {
+        fprintf(file, "%f", res); /** Write to file (float*/
+    }
     fclose(file); /** Close file */
 }
 
